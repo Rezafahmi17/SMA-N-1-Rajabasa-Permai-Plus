@@ -58,8 +58,3 @@ npm run dev      # Menjalankan frontend di http://localhost:5173
 - Buka `http://localhost:5173` untuk melihat website publik.
 - Buka `http://localhost:5173/admin/login` untuk masuk ke dashboard admin.
 
-## Catatan Tambahan
-
-- **Database**: Secara default menggunakan SQLite (`backend/src/database.sqlite`). File database ini akan otomatis dibuat saat backend pertama kali dijalankan, sehingga tidak perlu instalasi database server terpisah.
-- **Penyimpanan Berkas**: File gambar yang diunggah oleh admin akan disimpan pada folder `backend/src/uploads/` dan dapat diakses melalui `http://localhost:5000/uploads/nama-file.jpg`.
-- **Keamanan**: Pastikan untuk mengubah `JWT_SECRET` pada file `backend/.env` sebelum melakukan deployment ke environment production.
