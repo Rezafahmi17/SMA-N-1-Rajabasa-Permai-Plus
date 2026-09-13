@@ -16,13 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Folder foto yang diupload bisa diakses langsung lewat /uploads/nama-file.jpg
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/api', (req, res) => {
   res.json({ success: true, message: 'School Website API aktif', data: null });
 });
-
+ 
 app.use('/api/auth', authRoutes);
 app.use('/api/berita', beritaRoutes);
 app.use('/api/ekstrakurikuler', ekstrakurikulerRoutes);
