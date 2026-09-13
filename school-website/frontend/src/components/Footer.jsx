@@ -20,11 +20,17 @@ export default function Footer() {
             </p>
             {/* Social icons */}
             <div className="mt-5 flex gap-3">
-              {["facebook", "instagram", "youtube"].map((s) => (
+              {[
+                { id: "facebook", url: "https://web.facebook.com/profile.php?id=61568666822464" },
+                { id: "instagram", url: "https://www.instagram.com/rezafmdni?stkn=MXNxbzdkbmQxdHU2cQ%3D%3D&utm_source=qr" },
+                { id: "tiktok", url: "https://www.tiktok.com/@alkhamdaniii?_r=1&_t=ZS-99hodzleHKR" },
+              ].map((s) => (
                 <a
-                  key={s}
-                  href="#"
-                  aria-label={s}
+                  key={s.id}
+                  href={s.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={s.id}
                   className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/5 text-navy-200 transition-all duration-200 hover:bg-gold-500/20 hover:text-gold-400 hover:-translate-y-0.5"
                 >
                   <svg
@@ -32,14 +38,14 @@ export default function Footer() {
                     fill="currentColor"
                     viewBox="0 0 24 24"
                   >
-                    {s === "facebook" && (
+                    {s.id === "facebook" && (
                       <path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" />
                     )}
-                    {s === "instagram" && (
+                    {s.id === "instagram" && (
                       <path d="M16 2H8a6 6 0 00-6 6v8a6 6 0 006 6h8a6 6 0 006-6V8a6 6 0 00-6-6zm4 14a4 4 0 01-4 4H8a4 4 0 01-4-4V8a4 4 0 014-4h8a4 4 0 014 4v8zm-8-9a5 5 0 100 10A5 5 0 0012 7zm0 8a3 3 0 110-6 3 3 0 010 6zm5.5-8.5a1 1 0 100-2 1 1 0 000 2z" />
                     )}
-                    {s === "youtube" && (
-                      <path d="M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58zM9.75 15.02V8.98L15.5 12l-5.75 3.02z" />
+                    {s.id === "tiktok" && (
+                      <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z" />
                     )}
                   </svg>
                 </a>
