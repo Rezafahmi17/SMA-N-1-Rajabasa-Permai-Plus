@@ -1,24 +1,29 @@
-const multer = require('multer');
-const path = require('path');
+const multer = require("multer");
 
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, '..', 'uploads'));
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  },
-});
+const storage = multer.memoryStorage();
 
 function fileFilter(req, file, cb) {
-  const allowed = /jpeg|jpg|png|webp|gif/;
-  const ext = allowed.test(path.extname(file.originalname).toLowerCase());
-  const mime = allowed.test(file.mimetype);
-  if (ext && mime) return cb(null, true);
-  cb(new Error('Hanya file gambar (jpg, jpeg, png, webp, gif) yang diizinkan'));
+  const allowedMimeTypes = [
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "image/gif",
+  ];
+
+  if (allowedMimeTypes.includes(file.mimetype)) {
+    return cb(null, true);
+  }
+
+  cb(new Error("Hanya file gambar (jpg, jpeg, png, webp, gif) yang diizinkan"));
 }
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024 } });
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024,
+  },
+});
 
 module.exports = upload;

@@ -1,10 +1,33 @@
-const { Sequelize } = require('sequelize');
-const path = require('path');
+const { Sequelize } = require("sequelize");
+const path = require("path");
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: path.join(__dirname, '..', 'database.sqlite'),
-  logging: false,
-});
+let sequelize;
+
+if (process.env.DATABASE_URL) {
+  // Production: Supabase PostgreSQL
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
+    dialect: "postgres",
+    logging: false,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+    pool: {
+      max: 1,
+      min: 0,
+      idle: 10000,
+      acquire: 30000,
+    },
+  });
+} else {
+  // Development lokal: SQLite
+  sequelize = new Sequelize({
+    dialect: "sqlite",
+    storage: path.join(__dirname, "..", "database.sqlite"),
+    logging: false,
+  });
+}
 
 module.exports = sequelize;

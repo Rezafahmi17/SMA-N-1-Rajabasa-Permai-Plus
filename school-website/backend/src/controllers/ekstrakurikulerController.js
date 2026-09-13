@@ -1,9 +1,10 @@
-const { Ekstrakurikuler } = require('../models');
+const { Ekstrakurikuler } = require("../models");
+const { uploadImage } = require("../utils/storage");
 
 exports.getAll = async (req, res) => {
   try {
-    const list = await Ekstrakurikuler.findAll({ order: [['id', 'DESC']] });
-    res.json({ success: true, message: 'OK', data: list });
+    const list = await Ekstrakurikuler.findAll({ order: [["id", "DESC"]] });
+    res.json({ success: true, message: "OK", data: list });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
@@ -12,8 +13,13 @@ exports.getAll = async (req, res) => {
 exports.getOne = async (req, res) => {
   try {
     const item = await Ekstrakurikuler.findByPk(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: 'Ekstrakurikuler tidak ditemukan', data: null });
-    res.json({ success: true, message: 'OK', data: item });
+    if (!item)
+      return res.status(404).json({
+        success: false,
+        message: "Ekstrakurikuler tidak ditemukan",
+        data: null,
+      });
+    res.json({ success: true, message: "OK", data: item });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
@@ -22,10 +28,24 @@ exports.getOne = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const { nama, deskripsi, pembina } = req.body;
-    if (!nama) return res.status(400).json({ success: false, message: 'Nama wajib diisi', data: null });
-    const foto = req.file ? `/uploads/${req.file.filename}` : null;
-    const item = await Ekstrakurikuler.create({ nama, deskripsi, pembina, foto });
-    res.status(201).json({ success: true, message: 'Ekstrakurikuler berhasil ditambahkan', data: item });
+    if (!nama)
+      return res
+        .status(400)
+        .json({ success: false, message: "Nama wajib diisi", data: null });
+    const foto = req.file
+      ? await uploadImage(req.file, "ekstrakurikuler")
+      : null;
+    const item = await Ekstrakurikuler.create({
+      nama,
+      deskripsi,
+      pembina,
+      foto,
+    });
+    res.status(201).json({
+      success: true,
+      message: "Ekstrakurikuler berhasil ditambahkan",
+      data: item,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
@@ -34,16 +54,27 @@ exports.create = async (req, res) => {
 exports.update = async (req, res) => {
   try {
     const item = await Ekstrakurikuler.findByPk(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: 'Ekstrakurikuler tidak ditemukan', data: null });
+    if (!item)
+      return res.status(404).json({
+        success: false,
+        message: "Ekstrakurikuler tidak ditemukan",
+        data: null,
+      });
 
     const { nama, deskripsi, pembina } = req.body;
-    if (req.file) item.foto = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      item.foto = await uploadImage(req.file, "ekstrakurikuler");
+    }
     if (nama) item.nama = nama;
     if (deskripsi !== undefined) item.deskripsi = deskripsi;
     if (pembina !== undefined) item.pembina = pembina;
     await item.save();
 
-    res.json({ success: true, message: 'Ekstrakurikuler berhasil diperbarui', data: item });
+    res.json({
+      success: true,
+      message: "Ekstrakurikuler berhasil diperbarui",
+      data: item,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
@@ -52,9 +83,18 @@ exports.update = async (req, res) => {
 exports.remove = async (req, res) => {
   try {
     const item = await Ekstrakurikuler.findByPk(req.params.id);
-    if (!item) return res.status(404).json({ success: false, message: 'Ekstrakurikuler tidak ditemukan', data: null });
+    if (!item)
+      return res.status(404).json({
+        success: false,
+        message: "Ekstrakurikuler tidak ditemukan",
+        data: null,
+      });
     await item.destroy();
-    res.json({ success: true, message: 'Ekstrakurikuler berhasil dihapus', data: null });
+    res.json({
+      success: true,
+      message: "Ekstrakurikuler berhasil dihapus",
+      data: null,
+    });
   } catch (err) {
     res.status(500).json({ success: false, message: err.message, data: null });
   }
