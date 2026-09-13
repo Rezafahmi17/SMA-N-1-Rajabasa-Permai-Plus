@@ -7,10 +7,6 @@ import Hero from "../components/Hero.jsx";
 import CardBerita from "../components/CardBerita.jsx";
 import { getImageUrl } from "../utils/imageUrl";
 
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-).replace("/api", "");
-
 function SectionHeader({ title, linkLabel, linkTo }) {
   return (
     <div className="flex items-end justify-between mb-8">
@@ -18,19 +14,19 @@ function SectionHeader({ title, linkLabel, linkTo }) {
         <p className="text-xs font-bold uppercase tracking-widest text-gold-600 mb-1">
           Terbaru
         </p>
+
         <h2 className="font-serif text-2xl sm:text-3xl font-bold text-navy-700">
           {title}
         </h2>
       </div>
+
       {linkTo && (
         <Link
           to={linkTo}
           className="flex items-center gap-1 text-sm font-semibold text-gold-600 hover:text-gold-500 transition-colors"
         >
           {linkLabel}
-          <span className="transition-transform group-hover:translate-x-1">
-            →
-          </span>
+          <span>→</span>
         </Link>
       )}
     </div>
@@ -41,6 +37,7 @@ function SkeletonCard() {
   return (
     <div className="rounded-2xl bg-white shadow-card overflow-hidden">
       <div className="aspect-[16/10] skeleton" />
+
       <div className="p-5 space-y-3">
         <div className="h-3 w-24 skeleton rounded-full" />
         <div className="h-5 w-full skeleton rounded-md" />
@@ -56,32 +53,46 @@ export default function Beranda() {
   const [berita, setBerita] = useState([]);
   const [statistik, setStatistik] = useState(null);
   const [galeri, setGaleri] = useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function load() {
       try {
+        setError("");
+
         const [beritaRes, statistikRes, galeriRes] = await Promise.all([
           api.get("/berita"),
           api.get("/statistik"),
           api.get("/galeri"),
         ]);
-        setBerita(beritaRes.data.data.slice(0, 3));
-        setStatistik(statistikRes.data.data);
-        setGaleri(galeriRes.data.data.slice(0, 6));
-      } catch {
-        setError("Gagal memuat data dari server. Pastikan backend berjalan.");
+
+        const dataBerita = beritaRes?.data?.data || [];
+        const dataStatistik = statistikRes?.data?.data || null;
+        const dataGaleri = galeriRes?.data?.data || [];
+
+        setBerita(dataBerita.slice(0, 3));
+        setStatistik(dataStatistik);
+        setGaleri(dataGaleri.slice(0, 6));
+      } catch (err) {
+        console.error("Gagal mengambil data beranda:", err);
+
+        setError(
+          "Gagal memuat data dari server. Silakan coba beberapa saat lagi.",
+        );
       } finally {
         setLoading(false);
       }
     }
+
     load();
   }, []);
 
   return (
     <div className="flex min-h-screen flex-col bg-cream">
       <Navbar />
+
       <Hero
         jumlahGuru={statistik?.jumlahGuru}
         jumlahSiswa={statistik?.jumlahSiswa}
@@ -103,12 +114,13 @@ export default function Beranda() {
                   clipRule="evenodd"
                 />
               </svg>
+
               {error}
             </div>
           </div>
         )}
 
-        {/* Berita Section */}
+        {/* Berita */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
           <SectionHeader
             title="Berita & Kegiatan Terbaru"
@@ -139,6 +151,7 @@ export default function Beranda() {
                   />
                 </svg>
               </div>
+
               <p className="text-sm text-navy-400">
                 Belum ada berita yang dipublikasikan.
               </p>
@@ -152,34 +165,38 @@ export default function Beranda() {
           )}
         </section>
 
-        {/* CTA Banner */}
+        {/* CTA */}
         <section className="relative overflow-hidden bg-gradient-to-r from-navy-700 to-navy-900 py-14">
           <div className="pointer-events-none absolute inset-0">
             <div className="absolute -right-16 -top-16 h-64 w-64 rounded-full bg-gold-400/10 blur-3xl" />
             <div className="absolute -left-16 bottom-0 h-48 w-48 rounded-full bg-navy-500/30 blur-2xl" />
           </div>
+
           <div className="relative mx-auto max-w-6xl px-4 sm:px-6 text-center">
             <p className="text-xs font-bold uppercase tracking-widest text-gold-400 mb-3">
               Bergabunglah Bersama Kami
             </p>
+
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-white">
               Temukan potensi terbaik putra-putri Anda
             </h2>
+
             <p className="mt-4 max-w-lg mx-auto text-sm text-navy-200 leading-relaxed">
               Dengan lebih dari ratusan siswa berprestasi dan puluhan kegiatan
               ekstrakurikuler, SMA N 1 RAJABASA PERMAI PLUS adalah tempat yang
               tepat untuk berkembang.
             </p>
-            <a
-              href="/profil-sekolah"
+
+            <Link
+              to="/profil-sekolah"
               className="mt-8 inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-gold-500 to-gold-400 px-8 py-3 text-sm font-bold text-navy-900 shadow-glow-gold transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5"
             >
               Pelajari Profil Sekolah →
-            </a>
+            </Link>
           </div>
         </section>
 
-        {/* Galeri Section */}
+        {/* Galeri */}
         <section className="mx-auto max-w-6xl px-4 sm:px-6 py-16">
           <SectionHeader
             title="Galeri Kegiatan"
@@ -187,7 +204,13 @@ export default function Beranda() {
             linkTo="/galeri"
           />
 
-          {galeri.length === 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-6">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="aspect-square skeleton rounded-xl" />
+              ))}
+            </div>
+          ) : galeri.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="text-sm text-navy-400">Belum ada foto galeri.</p>
             </div>
@@ -201,7 +224,9 @@ export default function Beranda() {
                       ? "col-span-2 row-span-2 sm:col-span-2 sm:row-span-2"
                       : ""
                   }`}
-                  style={{ aspectRatio: idx === 0 ? "auto" : "1/1" }}
+                  style={{
+                    aspectRatio: idx === 0 ? "auto" : "1 / 1",
+                  }}
                 >
                   <div
                     className={
@@ -210,11 +235,18 @@ export default function Beranda() {
                         : "aspect-square"
                     }
                   >
-                    <img
-                      src={getImageUrl(item.foto)}
-                      alt={g.judul || "Galeri"}
-                      className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
+                    {g.foto ? (
+                      <img
+                        src={getImageUrl(g.foto)}
+                        alt={g.judul || "Galeri"}
+                        className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <div className="flex h-full min-h-[140px] items-center justify-center bg-navy-50 text-sm text-navy-300">
+                        Foto tidak tersedia
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
