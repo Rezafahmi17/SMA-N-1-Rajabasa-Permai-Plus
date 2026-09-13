@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { getImageUrl } from "../utils/imageUrl";
 
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-).replace("/api", "");
-
 export default function GaleriGrid({ items }) {
   const [selected, setSelected] = useState(null);
 
@@ -111,7 +107,7 @@ export default function GaleriGrid({ items }) {
             </button>
 
             <img
-              src={`${API_ORIGIN}${selected.foto}`}
+              src={getImageUrl(selected.foto)}
               alt={selected.judul || "Galeri sekolah"}
               className="max-h-[80vh] w-full rounded-2xl object-contain shadow-2xl"
             />

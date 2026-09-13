@@ -1,10 +1,6 @@
 import { Link } from "react-router-dom";
 import { getImageUrl } from "../utils/imageUrl";
 
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-).replace("/api", "");
-
 export default function CardBerita({ berita }) {
   return (
     <Link
@@ -14,7 +10,7 @@ export default function CardBerita({ berita }) {
       <div className="relative aspect-[16/10] w-full overflow-hidden bg-navy-50">
         {berita.foto ? (
           <img
-            src={getImageUrl(item.foto)}
+            src={getImageUrl(berita.foto)}
             alt={berita.judul}
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
           />

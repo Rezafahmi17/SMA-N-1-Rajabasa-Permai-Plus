@@ -5,10 +5,6 @@ import Footer from "../components/Footer.jsx";
 import api from "../services/api";
 import { getImageUrl } from "../utils/imageUrl";
 
-const API_ORIGIN = (
-  import.meta.env.VITE_API_URL || "http://localhost:5000/api"
-).replace("/api", "");
-
 export default function DetailBerita() {
   const { id } = useParams();
   const [berita, setBerita] = useState(null);
@@ -128,7 +124,7 @@ export default function DetailBerita() {
               {berita.foto && (
                 <div className="relative mb-8 overflow-hidden rounded-2xl shadow-card">
                   <img
-                    src={getImageUrl(item.foto)}
+                    src={getImageUrl(berita.foto)}
                     alt={berita.judul}
                     className="w-full object-cover"
                   />
